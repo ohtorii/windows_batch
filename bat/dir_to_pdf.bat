@@ -12,18 +12,25 @@ setlocal enabledelayedexpansion
 set CONVERT=%ChocolateyInstall%\bin\convert.exe
 
 for %%q in (%*) do (
-REM 	echo %%q
-	pushd %%q
-	call :GetDirName %%q
-	echo !CDN!
-	"%CONVERT%" *.* "!CDN!.pdf"
-	popd
+	call :Main %%q
 )
 
-:Exit
 pause
 exit /b 0
 
+
+:Main
+	pushd %1
+	if "!errorlevel!" neq "0" (
+		echo %1
+		exit /b 1
+	)
+	
+	call :GetDirName %1
+	echo !CDN!
+	"%CONVERT%" *.* "!CDN!.pdf"
+	popd
+	exit /b 0
 
 
 :GetDirName
