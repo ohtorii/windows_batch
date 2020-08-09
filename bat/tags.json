@@ -1,12 +1,18 @@
-[
-    {
-        "path":"%HOMEDRIVE%%HOMEPATH%\\GitHub\\OpeninHidemaruEditor\\VisualStudio\\OpeninHidemaruEditor",
-        "ctags_options":"-R --extras=+r",
-        "gtags_options":""
-    },
-    {
-        "path":"%HOMEDRIVE%%HOMEPATH%\\GitHub\\unity\\internal\\dll_project\\ohtorii_tools\\ohtorii_tools",
-        "ctags_options":"-R --extras=+r",
-        "gtags_options":""
-    }
-]
+{
+    "ignore_dirs": [ "\\.svn", "\\.github", "Release", "Debug", "x64", "Resources?", "Properties?", "bin", "out", "objs?", "libs?", "doc", "documents?", "images?", "packages?", "node_modules", "temp", "tempe"],
+    "paths":[
+        {
+            "path":"%HOMEDRIVE%%HOMEPATH%\\GitHub\\OpeninHidemaruEditor\\VisualStudio\\OpeninHidemaruEditor",
+            "recurse_tags":"no",
+            "recurse_directory":"yes"
+        },
+        {
+            "path":"%HOMEDRIVE%%HOMEPATH%\\GitHub\\unity\\internal\\dll_project\\ohtorii_tools\\ohtorii_tools",
+            "recurse_directory":"yes"
+        },
+        {
+            "path":"C:\\Users\\ikeuc\\GitHub",
+            "recurse_directory":"yes"
+        }
+    ]
+}
