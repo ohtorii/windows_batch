@@ -1,19 +1,19 @@
 {
-    "ignore_dirs": [ "\\.svn", "\\.github", "Release", "Debug", "x64", "Resources?", "Properties?", "bin", "out", "objs?", "libs?", "doc", "documents?", "images?", "packages?", "node_modules", "temp", "tempe"],
+    "ignore_dirs": [ 
+        "\\.svn", "\\.git", "\\.vs",
+        "temp", "tempe",
+        "Release", "Debug", "x64", 
+        "Resources?", "Properties?", 
+        "bin", "out", "objs?", "libs?", 
+        "doc", "documents?", "images?", 
+        "packages?", "node_modules?"
+        ],
     "paths":[
         {
-            "path":"%HOMEDRIVE%%HOMEPATH%\\GitHub\\OpeninHidemaruEditor\\VisualStudio\\OpeninHidemaruEditor",
-            "recurse_tags":"no",
-            "recurse_directory":"yes"
-        },
-        {
-            "path":"%HOMEDRIVE%%HOMEPATH%\\GitHub\\unity\\internal\\dll_project\\ohtorii_tools\\ohtorii_tools",
-            "recurse_directory":"yes"
-        },
+            "path":"%HOMEDRIVE%%HOMEPATH%\\GitHub",
+            "recurse_tags":"yes",            
+            "recurse_depth":"1"
+        }        
         
-        {
-            "path":"D:\\temp\\grpc-master",
-            "recurse_directory":"yes"
-        }
     ]
 }

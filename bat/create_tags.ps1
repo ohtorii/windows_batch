@@ -1,40 +1,57 @@
 ﻿
+Param([switch]$DryRun=$false );
+
 $ctags_base_options="--extras=+r";
 $gtags_base_options="";
 
 function startMyApp($confPath){
 	$body=Get-Content $confPath | ConvertFrom-Json;
-	$script:ignore_dirs=$body.ignore_dirs;
-
-	foreach($item in $body.paths){
-		#初めに、Jsonで指定したディレクトリにtagを作る
-		$target_dir = [System.Environment]::ExpandEnvironmentVariables($item.path);
-		$target_dir = $target_dir + "\";
-
-		if(-Not(ignore_path $target_dir)){
-			$make_ctags_result = make_ctags $target_dir $item.recurse_tags;
-			if($make_ctags_result -ne 0){
-				return 1;			
-			}
-		}
-		#次に、再帰=yes ならば、サブディレクトリにtagを作る
-		if($item.recurse_directory -eq "yes"){
-			$sub_dirs=Get-ChildItem -Recurse -Directory $target_dir| ForEach-Object {$_.FullName};
-			foreach($dir in $sub_dirs){
-				$dir=$dir+"\";
-				if(-Not(ignore_path $dir)){
-					$make_ctags_result = make_ctags $dir $item.recurse_tags;		
-					if($make_ctags_result -ne 0){
-						return 1;
-					}
-				}
-			}
-		}else{
-			#pass
-		}		
+	$script:ignore_dirs=$body.ignore_dirs;	
+	
+	gather_commands $body|ForEach-Object -Parallel {
+		Write-Host $_;
+		Invoke-Expression $_;
 	}
 	return 0;
 }
+
+function gather_commands($body){
+	ForEach ($item in $body.paths){
+		$target_dir = [System.Environment]::ExpandEnvironmentVariables($item.path);
+		#$target_dir = $target_dir + "\";
+		if(ignore_path $target_dir){
+			continue;
+		}
+		foreach($dir in gather_target_dirs $target_dir $item.recurse_depth){
+			$command = create_command_line $dir $recurse_tags;
+			if($command -eq ""){
+				continue ;
+			}
+			if($DryRun){
+				Write-Output "Write-Host `"$command`"";
+			}else{
+				Write-Output "Start-Process -Wait -FilePath `"cmd`" -ArgumentList '$command';";
+			}			
+		}	
+	}
+}
+
+function gather_target_dirs($root_dir, $depth){
+	$depth_value=0;
+	if(-Not([int]::TryParse($depth,[ref]$depth_value))){
+		return $root_dir;
+	}
+	if($depth_value -eq 0){
+		return $root_dir;
+	}
+	foreach($dir in Get-ChildItem -Recurse -Depth $depth_value -Directory $target_dir){
+		if(ignore_path $dir){
+			continue;
+		}
+		Write-Output $dir;
+	}
+}
+
 
 function ignore_path($dir){
 	$sep="[\\/]";
@@ -47,7 +64,7 @@ function ignore_path($dir){
 	return $FALSE;
 }
 
-function make_ctags($dir, $recurse_tags){
+function create_command_line($dir, $recurse_tags){
 	$recurse=parse_recurse_tags $recurse_tags;
 	$ctags_command = switch($recurse){
 		"yes"{
@@ -61,14 +78,13 @@ function make_ctags($dir, $recurse_tags){
 		}
 		default{
 			Write-Host "Unknown option";
-			return 1;	
+			return "";	
 		}
 	}
-	$command = "/c pushd `"{0}`"&&{1}" -f $dir, $ctags_command;		
-	Write-Host $command;
-	#Start-Process -FilePath "cmd" -ArgumentList $command;
-	return 0;
+	$command = "/c pushd `"{0}`"&&{1}" -f $dir, $ctags_command;
+	return $command;
 }
+
 function parse_recurse_tags($option){
 	if($null -eq $option){
 		return "yes";
@@ -85,34 +101,4 @@ function parse_recurse_tags($option){
 	return "unknown";
 }
 
-
-startMyApp "tags.json";;
-exit;
-
-
-
-
-# komwnkomennto 
-<# komennto 
-コメントです
-# >
-#>
-<#
-foreach ($line in Get-Content tags.conf) {
-	if($line.trim() -eq ""){
-		#空白行なので無視する
-		continue;
-	}
-
-	if($line.StartsWith("#")){
-		#コメント行なので無視する
-		continue;
-	}
-	
-	pusd $line
-	ctagを生成する
-	popd
-	
-	Write-Host $line;
-}
-#>
+exit startMyApp "tags.json";;
