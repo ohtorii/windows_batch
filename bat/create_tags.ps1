@@ -1,15 +1,14 @@
 ﻿
-Param([switch]$DryRun=$false );
+Param([Parameter(Mandatory=$true)][string]$ConfigFileName,[switch]$DryRun=$false );
 
 $ctags_base_options="--extras=+r";
 $gtags_base_options="";
 
-function startMyApp($confPath){
-	$body=Get-Content $confPath | ConvertFrom-Json;
+function startMyApp(){
+	$body=Get-Content $ConfigFileName | ConvertFrom-Json;
 	$script:ignore_dirs=$body.ignore_dirs;	
 	
-	gather_commands $body|ForEach-Object -Parallel {
-		Write-Host $_;
+	gather_commands $body | ForEach-Object -Parallel {
 		Invoke-Expression $_;
 	}
 	return 0;
@@ -23,7 +22,7 @@ function gather_commands($body){
 			continue;
 		}
 		foreach($dir in gather_target_dirs $target_dir $item.recurse_depth){
-			$command = create_command_line $dir $recurse_tags;
+			$command = create_ctags_command $dir $recurse_tags;
 			if($command -eq ""){
 				continue ;
 			}
@@ -64,7 +63,7 @@ function ignore_path($dir){
 	return $FALSE;
 }
 
-function create_command_line($dir, $recurse_tags){
+function create_ctags_command($dir, $recurse_tags){
 	$recurse=parse_recurse_tags $recurse_tags;
 	$ctags_command = switch($recurse){
 		"yes"{
@@ -101,4 +100,4 @@ function parse_recurse_tags($option){
 	return "unknown";
 }
 
-exit startMyApp "tags.json";;
+exit startMyApp;
