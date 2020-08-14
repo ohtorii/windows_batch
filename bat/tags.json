@@ -10,8 +10,9 @@
             "path":"%HOMEDRIVE%%HOMEPATH%\\GitHub\\unity\\internal\\dll_project\\ohtorii_tools\\ohtorii_tools",
             "recurse_directory":"yes"
         },
+        
         {
-            "path":"C:\\Users\\ikeuc\\GitHub",
+            "path":"D:\\temp\\grpc-master",
             "recurse_directory":"yes"
         }
     ]
