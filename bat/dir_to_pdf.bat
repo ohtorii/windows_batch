@@ -11,9 +11,7 @@ setlocal enabledelayedexpansion
 
 set CONVERT=%ChocolateyInstall%\bin\convert.exe
 
-for %%q in (%*) do (
-	call :Main %%q
-)
+for %%q in (%*) do call :Main %%q
 
 pause
 exit /b 0
@@ -41,10 +39,10 @@ exit /b 0
 	set CDN=%1
 	set CDN=%CDN:"=%
 	set CDN=%CDN:/=\%
-	if "%CDN:~-1%"=="\" (set CDN=%CDN:~0,-1%)
+	if "%CDN:~-1%"=="\" set CDN=%CDN:~0,-1%
 
 	:loop_CDN
 	set CDN=%CDN:*\=%
-	if not "%CDN:*\=%"=="%CDN%" (goto loop_CDN)
+	if not "%CDN:*\=%"=="%CDN%" goto loop_CDN
 
 	exit /b 0
