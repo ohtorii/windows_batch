@@ -6,8 +6,14 @@ REM 環境変数（VSDEVCMD）でパスを返します。
 REM 
 @echo off
 setlocal
+set VS2022=C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\Tools\VsDevCmd.bat
 set VS2019=C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\Tools\VsDevCmd.bat
 set VS2017=C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\Tools\VsDevCmd.bat
+
+if exist %VS2022% (
+    endlocal && set VSDEVCMD=%VS2022%
+    exit /b 0
+)
 
 if exist %VS2019% (
     endlocal && set VSDEVCMD=%VS2019%
