@@ -12,7 +12,7 @@ exit /b 0
 :Main
 	call :GetDirName "%~1"
 	set PARENT_DIR=%~dp1
-	7z.exe a "!PARENT_DIR!\!CDN!.zip" "%~1"
+	"C:\Program Files\7-Zip\7z.exe" a "!PARENT_DIR!\!CDN!.zip" "%~1"
 	exit /b 0
 
 :GetDirName
